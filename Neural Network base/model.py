@@ -13,7 +13,7 @@ data_flag = 'pneumoniamnist'
 # data_flag = 'breastmnist'
 download = True
 
-NUM_EPOCHS = 3
+NUM_EPOCHS = 10
 BATCH_SIZE = 128
 lr = 0.001
 
@@ -169,3 +169,4 @@ torch.save(model, r'C:\Users\mgbou\OneDrive\Documents\GitHub\GPT-Pneumonia-Detec
 
 model = torch.load(r'C:\Users\mgbou\OneDrive\Documents\GitHub\GPT-Pneumonia-Detection\pneumonia_model.pth')
 model.eval()
+
