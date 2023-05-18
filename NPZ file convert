@@ -1,1 +1,40 @@
+import numpy as np
+import os
+from PIL import Image
+import zipfile
 
+# Load the .npz file
+npz_file = r'C:\Users\mgbou\OneDrive\Documents\GitHub\GPT-Pneumonia-Detection\original dataset\pneumoniamnist (1).npz'
+data = np.load(npz_file)
+
+# Verify the keys in the .npz file
+if 'images' not in data or 'labels' not in data:
+    raise KeyError("The required keys 'images' and 'labels' are not present in the .npz file.")
+
+# Extract the images and labels
+images = data['images']
+labels = data['labels']
+
+# Create a directory to store the JPEG images
+output_dir = r'C:\Users\mgbou\OneDrive\Documents\GitHub\GPT-Pneumonia-Detection\x-ray dataset'
+os.makedirs(output_dir, exist_ok=True)
+
+# Convert and save the images as JPEG
+for i, image in enumerate(images):
+    image_path = os.path.join(output_dir, f'image_{i}.jpeg')
+    image = Image.fromarray(image)
+    image.save(image_path)
+
+# Create a zip file to store the JPEG images
+zip_file = 'path/to/output_zip_file.zip'
+with zipfile.ZipFile(zip_file, 'w') as zipf:
+    # Add the JPEG images to the zip file
+    for i in range(len(images)):
+        image_path = os.path.join(output_dir, f'image_{i}.jpeg')
+        zipf.write(image_path, f'image_{i}.jpeg')
+
+# Clean up: remove the directory with JPEG images
+for i in range(len(images)):
+    image_path = os.path.join(output_dir, f'image_{i}.jpeg')
+    os.remove(image_path)
+os.rmdir(output_dir)

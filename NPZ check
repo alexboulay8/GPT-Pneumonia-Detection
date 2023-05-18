@@ -1,0 +1,3 @@
+import np
+data = np.load(r'C:\Users\mgbou\OneDrive\Documents\GitHub\GPT-Pneumonia-Detection\original dataset\pneumoniamnist (1).npz')
+print(data.keys())
