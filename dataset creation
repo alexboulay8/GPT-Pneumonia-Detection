@@ -1,0 +1,41 @@
+import os
+from PIL import Image
+from torch.utils.data import Dataset
+
+class ChestXRayDataset(Dataset):
+    def __init__(self, data_dir, transform=None):
+        self.data_dir = data_dir
+        self.transform = transform
+
+        self.image_paths = []
+        self.labels = []
+
+        # Iterate over the train, test, and val directories
+        for split in ['train', 'test', 'val']:
+            split_dir = os.path.join(data_dir, split)
+
+            # Iterate over the classes (pneumonia, normal)
+            for label in os.listdir(split_dir):
+                label_dir = os.path.join(split_dir, label)
+
+                # Iterate over the images in each class directory
+                for image_file in os.listdir(label_dir):
+                    image_path = os.path.join(label_dir, image_file)
+                    self.image_paths.append(image_path)
+                    self.labels.append(label)
+
+    def __len__(self):
+        return len(self.image_paths)
+
+    def __getitem__(self, idx):
+        image_path = self.image_paths[idx]
+        label = self.labels[idx]
+
+        # Load the image
+        image = Image.open(image_path).convert('RGB')
+
+        # Apply transformations, if provided
+        if self.transform is not None:
+            image = self.transform(image)
+
+        return image, label
