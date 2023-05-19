@@ -5,9 +5,12 @@ import torch.nn as nn
 import torch.optim as optim
 import torch.utils.data as data
 import torchvision.transforms as transforms
+from torchvision import transforms
+
 
 import medmnist
 from medmnist import INFO, Evaluator
+from PIL import Image
 
 data_flag = 'pneumoniamnist'
 # data_flag = 'breastmnist'
@@ -20,7 +23,8 @@ lr = 0.001
 info = INFO[data_flag]
 task = info['task']
 n_channels = info['n_channels']
-n_classes = len(info['label'])
+num_classes = len(info['label'])
+
 
 DataClass = getattr(medmnist, info['python_class'])
 
@@ -49,34 +53,36 @@ train_dataset.montage(length=20)
 class Net(nn.Module):
     def __init__(self, in_channels, num_classes):
         super(Net, self).__init__()
-        
 
         self.layer1 = nn.Sequential(
-            nn.Conv2d(3, 16, kernel_size=3, stride=1, padding=1),
-            nn.ReLU(),
-            nn.MaxPool2d(kernel_size=2, stride=2))
+            nn.Conv2d(in_channels, 16, kernel_size=3),
+            nn.BatchNorm2d(16),
+            nn.ReLU())
 
         self.layer2 = nn.Sequential(
-            nn.Conv2d(3, 16, kernel_size=3, stride=1, padding=1),
+            nn.Conv2d(16, 16, kernel_size=3),
+            nn.BatchNorm2d(16),
             nn.ReLU(),
             nn.MaxPool2d(kernel_size=2, stride=2))
 
         self.layer3 = nn.Sequential(
-            nn.Conv2d(3, 16, kernel_size=3, stride=1, padding=1),
-            nn.ReLU(),
-            nn.MaxPool2d(kernel_size=2, stride=2))
-        
+            nn.Conv2d(16, 64, kernel_size=3),
+            nn.BatchNorm2d(64),
+            nn.ReLU())
+
         self.layer4 = nn.Sequential(
-            nn.Conv2d(3, 16, kernel_size=3, stride=1, padding=1),
-            nn.ReLU(),
-            nn.MaxPool2d(kernel_size=2, stride=2))
+            nn.Conv2d(64, 64, kernel_size=3),
+            nn.BatchNorm2d(64),
+            nn.ReLU())
+
         self.layer5 = nn.Sequential(
-            nn.Conv2d(3, 16, kernel_size=3, stride=1, padding=1),
+            nn.Conv2d(64, 64, kernel_size=3, padding=1),
+            nn.BatchNorm2d(64),
             nn.ReLU(),
             nn.MaxPool2d(kernel_size=2, stride=2))
 
         self.fc = nn.Sequential(
-            nn.Linear(64 * 4 * 4, 128),
+            nn.Linear(1024, 128),  # Adjusted input size to 1024
             nn.ReLU(),
             nn.Linear(128, 128),
             nn.ReLU(),
@@ -92,7 +98,8 @@ class Net(nn.Module):
         x = self.fc(x)
         return x
 
-model = Net(in_channels=n_channels, num_classes=n_classes)
+
+model = Net(in_channels=n_channels, num_classes=num_classes)
     
 # define loss function and optimizer
 if task == "multi-label, binary-class":
@@ -163,49 +170,39 @@ print('==> Evaluating ...')
 test('train')
 test('test')
 
+
 torch.save(model, r'C:\Users\mgbou\OneDrive\Documents\GitHub\GPT-Pneumonia-Detection\pneumonia_model.pth')
 
+
 model = torch.load(r'C:\Users\mgbou\OneDrive\Documents\GitHub\GPT-Pneumonia-Detection\pneumonia_model.pth')
+
 model.eval()
 
-import torch
-import torchvision.transforms as transforms
-from PIL import Image
+# Prediction module
 
-# Define the transform to be applied to the input image
-test_image_path = 'path/to/test/image.jpg'
-image_transforms = transforms.Compose([
-    transforms.Resize((28, 28)),
-    transforms.ToTensor(),
-    transforms.Normalize((0.5,), (0.5,))
-])
-test_image = Image.open(test_image_path).convert('RGB')
-test_image = image_transforms(test_image)
-test_image = torch.unsqueeze(test_image, 0)
+def predict_image(model, image_path):
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    model.to(device)
+    model.eval()
 
-# Pass the preprocessed image through the model for prediction
-outputs = model(test_image)
+    image = Image.open(image_path).convert('L')
+    image_transform = transforms.Compose([
+        transforms.Resize((28, 28)),
+        transforms.ToTensor(),
+        transforms.Normalize(mean=[.5], std=[.5])
+    ])
+    image = image_transform(image).unsqueeze(0).to(device)
 
-# Load the trained model
-model = torch.load('pneumonia_model.pth')
-model.eval()  # Set the model to evaluation mode
+    with torch.no_grad():
+        outputs = model(image)
+    _, predicted = outputs.max(1)
+    return predicted.item()
 
-# Load and preprocess the new image
-image_path = r'C:\Users\mgbou\OneDrive\Documents\GitHub\GPT-Pneumonia-Detection\test_images\person1_virus_6.jpeg'  # Replace with the path to your image
-image = Image.open(image_path).convert('RGB')
-image = transform(image).unsqueeze(0)  # Add a batch dimension
 
-# Make the prediction
-with torch.no_grad():
-    output = model(image)
 
-# Get the predicted class
-predicted_class = torch.argmax(output, dim=1).item()
-
-# Define the class labels
-class_labels = ['Non-Pneumonia', 'Pneumonia']
-
-# Print the prediction
-print(f"The image is classified as: {class_labels[predicted_class]}")
+# Usage example
+test_image_path = (r"C:\Users\mgbou\OneDrive\Documents\GitHub\GPT-Pneumonia-Detection\test_images\IM-0011-0001.jpeg")
+prediction = predict_image(model, test_image_path)
+print(f'Prediction: {"Pneumonia" if prediction == 1 else "Non-Pneumonia"}')
 
 
