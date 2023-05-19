@@ -13,7 +13,7 @@ from medmnist import INFO, Evaluator
 from PIL import Image
 
 data_flag = 'pneumoniamnist'
-# data_flag = 'breastmnist'
+# data_flag = 'npz file name eg. pneumoniamnist'
 download = True
 
 NUM_EPOCHS = 3
