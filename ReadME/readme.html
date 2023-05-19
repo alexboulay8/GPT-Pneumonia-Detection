@@ -5,19 +5,48 @@
     </head>
 
     <body>
-        For our Senior Encounter 2023 we shadowed at the Technology Innovation Center at Johns Hopkins. We were tasked with the project of using ChatGPT to compile code that would create a neural network and learn to identify Pneumonia from patient chest x-rays.
-        <br>
-        <br>
-        To accomplish this we used the ChatGPT version 4.0 as well as PyTorch open source framework to create our neural network and MedMNIST online medical dataset. 
-        <br>
-        <br>
-        We started by asking ChatGPT to formulate a checklist that would allow us to accomplish our goal of creating a neural network. We then took principles of prompt engineering to break down our checklist and use ChatGPT to compile code based on very specific inputs. This allowed us to create a framework of what we needed to accomplish and to allow us to specifically ask GPT to compile code based on our needs. 
-        <br>
-        <br>
-        To start compiling our python scripts, we needed to install PyTorch and its dependencies, using pip we installed PyTorch and used the documentation to ask GPT to create a program that would allow us to utilize the MedMNIST dataset. While we attempted to use GPT solely to create the programs we needed for machine learning. However due to our lack of knowledge of PyTorch specifics that would allow us to make changes specific to our needs we were unable to create the neural network solely using ChatGPT. 
-        <br>
-        <br>
-        After investigating the documentation of the MedMNIST xray datasets we discovered on the creators github, documentation for implementing the datasets using PyTorch into a machine learning training script. We followed the guide and used it to pull the dataset from the repository and format it so that the training module would work as intended.
+      <h2>Project Introduction:</h2>
+      For Senior Encounter, a two week internship/shadowing experience with a professional in a chosen 
+      field, Me, Alex Boulay, and Kaikai Du were tasked with utilizing skills of prompt engineering to 
+      have ChatGPT an OpenAI chat bot, write code that would allow us to input Chest X-Ray images and it 
+      would output a prediction on whether the patient has or does not have pneumonia. 
+      <br>
+      <br>
+      To accomplish this we dived into the introduction of prompt engineering, 
+      a style of engineering that utilizes A.I chatbots and sends specific prompts 
+      to accomplish a task. We used this by splitting our goal into smaller steps that 
+      we could then use to send specific prompts to ChatGPT and would allow for the code 
+      we received to be accurate. 
+      <br>
+      <br>
+      <h2>Technical Details:</h2>
+      While most of the code that we used to accomplish this was written by ChatGPT there were still 
+      technical requirements that we needed to do before it would work on our own devices. We needed a 
+      fresh install of the newest version of Python 3, 3.11, as well as an install of PyTorch an open 
+      source framework for deep learning and neural networks that uses python's engine. Documentation for 
+      the install of PyTorch can be found on their website 
+      <a href = "https://pytorch.org/get-started/locally/">Pytorch Documentation</a>, The installation 
+      only requires a pip3 install or through other means listed. 
+      <br>
+      <br>
+      A second challenge that we faced was the importing of the dataset that we used to train our model. 
+      We gathered our dataset from the MedMNIST Dataset, this dataset is open source and features both 2D 
+      and 3D datasets. We chose Pneumonia as our main dataset because of its straightforward nature as well
+      as its Binary Classification which would greatly simplify how we trained our model. While MedMNIST 
+      structures their datasets into a NumPy array format with the .npz file format, it comes with 
+      documentation that shows examples on how to use built-in PyTorch integration to use the MedMNIST
+      dataset for neural networking. The MedMNIST dataset can be found on their website, 
+      <a href = "https://medmnist.com/">MedMNIST</a>. As well as their github which provides a guide for 
+      implementing MedMNIST dataset into PyTorch, <a href="https://github.com/MedMNIST/MedMNIST">MedMNIST 
+      Github</a>.   
+      <br>
+      <br>
+      <h2>Other Information:</h2>
+      Access to all files used in this project are listed on this repository. 
+      A page with download links for all major files, as well as links to any 
+      websites that we used during this project will also be listed. I will also 
+      provide a download for the PDF of the ChatGPT thread that was used for this
+      project. 
 
-        TBD
+      
     </body>
