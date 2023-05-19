@@ -12,12 +12,12 @@ import medmnist
 from medmnist import INFO, Evaluator
 from PIL import Image
 
-data_flag = 'pneumoniamnist'
+data_flag = 'dataset file type'
 # data_flag = 'npz file name eg. pneumoniamnist'
 download = True
 
-NUM_EPOCHS = 3
-BATCH_SIZE = 32
+NUM_EPOCHS = 3 #adjust how many cycles through training set model completes
+BATCH_SIZE = 32 #adjust how many training images in each batch model trains with at a time
 lr = 0.001
 
 info = INFO[data_flag]
@@ -171,10 +171,10 @@ test('train')
 test('test')
 
 
-torch.save(model, r'C:\Users\mgbou\OneDrive\Documents\GitHub\GPT-Pneumonia-Detection\pneumonia_model.pth')
+torch.save(model, r'Directory Path to model file with file type .pth')
 
 
-model = torch.load(r'C:\Users\mgbou\OneDrive\Documents\GitHub\GPT-Pneumonia-Detection\pneumonia_model.pth')
+model = torch.load(r'Directory Path to model file with file type .pth')
 
 model.eval()
 
@@ -201,7 +201,7 @@ def predict_image(model, image_path):
 
 
 # Usage example
-test_image_path = (r"C:\Users\mgbou\OneDrive\Documents\GitHub\GPT-Pneumonia-Detection\test_images\IM-0011-0001.jpeg")
+test_image_path = (r"Directory to test image with file type jpeg. jpg. png.")
 prediction = predict_image(model, test_image_path)
 print(f'Prediction: {"Pneumonia" if prediction == 1 else "Non-Pneumonia"}')
 
