@@ -73,11 +73,11 @@ def predict_image(model, image_path):
 
 
 # Load the saved model/load directory path to where the .pth file is located on your computer
-model = torch.load(r'C:\Users\mgbou\OneDrive\Documents\GitHub\GPT-Pneumonia-Detection\pneumonia_model.pth')
+model = torch.load(r'Directory of Model File (.pth)')
 model.eval()
 
 # Directory containing the test images/Change to directory on your computer
-test_images_dir = r"C:\Users\mgbou\OneDrive\Documents\GitHub\GPT-Pneumonia-Detection\test_images\Non-Pneumonia"
+test_images_dir = r"Directory of Test Images / Different to Images used for Training"
 
 # Process each image file in the directory
 for filename in os.listdir(test_images_dir):
