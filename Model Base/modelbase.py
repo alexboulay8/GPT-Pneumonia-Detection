@@ -7,6 +7,8 @@ import torch.utils.data as data
 import torchvision.transforms as transforms
 from torchvision import transforms
 
+import matplotlib
+import matplotlib.pyplot as plt
 
 import medmnist
 from medmnist import INFO, Evaluator
@@ -109,13 +111,20 @@ else:
     
 optimizer = optim.SGD(model.parameters(), lr=lr, momentum=0.9)
 
-# train
+#declare arrays to hold loss and accuracy values
+train_loss,train_acc = [],[]
 
+
+# train
 for epoch in range(NUM_EPOCHS):
     train_correct = 0
     train_total = 0
     test_correct = 0
     test_total = 0
+    
+    running_loss = 0.0
+    running_correct,counter = 0,0
+
     
     model.train()
     for inputs, targets in tqdm(train_loader):
@@ -130,9 +139,23 @@ for epoch in range(NUM_EPOCHS):
             targets = targets.squeeze().long()
             loss = criterion(outputs, targets)
         
+        #running loss for current epoch
+        running_loss += loss.item()
+        
+        #running correct for current epoch
+        _,preds = torch.max(outputs.data,1)
+        running_correct += (preds==targets).sum().item()
+      
+        
         loss.backward()
         optimizer.step()
-
+       
+    #calculate epoch loss and accuracy and save to arrays
+    epoch_loss = running_loss / counter
+    epoch_acc = 100.*(running_correct/len(train_loader.dataset)
+    train_loss.append(epoch_loss)
+    train_acc.append(epoch_acc)
+                     
 # evaluation
 
 def test(split):
@@ -170,6 +193,23 @@ print('==> Evaluating ...')
 test('train')
 test('test')
 
+#create graph and display graph of training loss and accuracy
+plt.figure(figsize = (10,5))
+plt.subplot(1,2,1)
+plt.plot(range(1,NUM_EPOCHS+1),train_loss,label = 'Training Loss')
+plt.xlabel('Epoch')
+plt.ylabel('Loss')
+plt.legend()
+                      
+plt.subplot(1,2,2)
+plt.plot(range(1,NUM_EPOCHS+1),train_acc,label = 'Training Accuracy')
+plt.xlabel('Epoch')
+plt.ylabel('Accuracy')
+plt.legend()
+                      
+plt.tight_layout()
+plt.show()
+                      
 
 torch.save(model, r'Directory Path to model file with file type .pth')
 
