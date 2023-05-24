@@ -16,6 +16,8 @@
     <br>
 
     <h4>Pip Install:</h4>
+    For our purposes we used pip to install the required libraries. 
+    <br></br>
     To install pip onto your computer to be able to install necessary Python libraries, open your terminal and run these commands,
     <br>
     <br>
@@ -27,7 +29,7 @@
     <br>
     To verify that Pip was installed run the command "pip --version" you should get this output: 
     <br><br>
-    "pip 23.1.2 from C:\Users\mgbou\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\pip (python 3.11)"
+    "pip 23.1.2 from (local directory)
     <br><br>
     If pip did not install correctly visit the Pip documentation page for a manual download, <a href = "https://pip.pypa.io/en/stable/installation/">Link</a>.
 
@@ -35,7 +37,7 @@
     <h4>PyTorch Install:</h4>
     To install PyTorch onto your computer to use in Python Scripts run the following command,
     <br><br>
-    "pip3 install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu117"
+    "pip install Pytorch"
     <br><br>
     If PyTorch is not correctly installed visit the documentation page to correctly install the PyTorch libraries, <a href = "https://pytorch.org/get-started/locally/">Link</a>.
    <br><br>
@@ -44,12 +46,18 @@
    <br><br>
    "pip install MatPlotLib"
    <br><br>
+    <h4>MedMNIST Install</h4>
+    To install the MedMNIST library from which this data gets its datasets run the following command 
+    <br></br>
+     "pip install medmnist"
     <h3>ModelBase Explanation:</h3>>
-
+    
+    
     <img src = "assets/1. Import Required Libraries.png">
     <br><br>
     <img src = "assets/2. Configuration and Dataset Preperation.png">
     <br><br>
+    Note: the "data_flag" variable should be changed based on the dataset you plan to use. Eg. "pneumoniamnist" for the Pneumonia dataset. 
     <img src = "assets/3. Create the Neural Network.png">
     <br><br>
     <img src = "assets/4. Setup the Training Process.png">
