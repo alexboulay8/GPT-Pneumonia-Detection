@@ -9,8 +9,13 @@ from torchvision import transforms
 import medmnist
 from medmnist import INFO, Evaluator
 from PIL import Image
+import matplotlib.pyplot as plt
 
-data_flag = 'dataset file type'
+
+
+
+
+data_flag = 'pneumoniamnist'
 # data_flag = 'npz file name eg. pneumoniamnist'
 download = True
 
@@ -145,6 +150,7 @@ for epoch in range(NUM_EPOCHS):
         
         loss.backward()
         optimizer.step()
+        counter +=1
        
     #calculate epoch loss and accuracy and save to arrays
     epoch_loss = running_loss / counter
@@ -189,56 +195,23 @@ print('==> Evaluating ...')
 test('train')
 test('test')
 
-#create graph and display graph of training loss and accuracy
-plt.figure(figsize = (10,5))
-plt.subplot(1,2,1)
-plt.plot(range(1,NUM_EPOCHS+1),train_loss,label = 'Training Loss')
+torch.save(model, r"Path to Directory to save Model (.pth file)")
+
+# Create graph and display graph of training loss and accuracy
+plt.figure(figsize=(10, 5))
+plt.subplot(1, 2, 1)
+plt.plot(range(1, NUM_EPOCHS + 1), train_loss, label='Training Loss')
 plt.xlabel('Epoch')
 plt.ylabel('Loss')
 plt.legend()
-                      
-plt.subplot(1,2,2)
-plt.plot(range(1,NUM_EPOCHS+1),train_acc,label = 'Training Accuracy')
+
+plt.subplot(1, 2, 2)
+plt.plot(range(1, NUM_EPOCHS + 1), train_acc, label='Training Accuracy')
 plt.xlabel('Epoch')
 plt.ylabel('Accuracy')
 plt.legend()
-                      
+
 plt.tight_layout()
 plt.show()
-                      
-
-torch.save(model, r'Directory Path to model file with file type .pth')
-
-
-model = torch.load(r'Directory Path to model file with file type .pth')
-
-model.eval()
-
-# Prediction module
-
-def predict_image(model, image_path):
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    model.to(device)
-    model.eval()
-
-    image = Image.open(image_path).convert('L')
-    image_transform = transforms.Compose([
-        transforms.Resize((28, 28)),
-        transforms.ToTensor(),
-        transforms.Normalize(mean=[.5], std=[.5])
-    ])
-    image = image_transform(image).unsqueeze(0).to(device)
-
-    with torch.no_grad():
-        outputs = model(image)
-    _, predicted = outputs.max(1)
-    return predicted.item()
-
-
-
-# Usage example
-test_image_path = (r"Directory to test image with file type jpeg. jpg. png.")
-prediction = predict_image(model, test_image_path)
-print(f'Prediction: {"Pneumonia" if prediction == 1 else "Non-Pneumonia"}')
 
 
