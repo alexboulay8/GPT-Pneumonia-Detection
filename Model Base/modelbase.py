@@ -6,10 +6,6 @@ import torch.optim as optim
 import torch.utils.data as data
 import torchvision.transforms as transforms
 from torchvision import transforms
-
-import matplotlib
-import matplotlib.pyplot as plt
-
 import medmnist
 from medmnist import INFO, Evaluator
 from PIL import Image
@@ -152,7 +148,7 @@ for epoch in range(NUM_EPOCHS):
        
     #calculate epoch loss and accuracy and save to arrays
     epoch_loss = running_loss / counter
-    epoch_acc = 100.*(running_correct/len(train_loader.dataset)
+    epoch_acc = 100.*(running_correct/len(train_loader.dataset))
     train_loss.append(epoch_loss)
     train_acc.append(epoch_acc)
                      

@@ -6,21 +6,22 @@ import torch.optim as optim
 import torch.utils.data as data
 import torchvision.transforms as transforms
 from torchvision import transforms
-from torchvision.transforms import RandomHorizontalFlip, RandomRotation, RandomResizedCrop
-
-
 import medmnist
 from medmnist import INFO, Evaluator
 from PIL import Image
+import matplotlib.pyplot as plt
+
+
+
+
 
 data_flag = 'pneumoniamnist'
 # data_flag = 'npz file name eg. pneumoniamnist'
 download = True
 
-NUM_EPOCHS = 15
-BATCH_SIZE = 32
+NUM_EPOCHS = 3 #adjust how many cycles through training set model completes
+BATCH_SIZE = 32 #adjust how many training images in each batch model trains with at a time
 lr = 0.001
-weight_decay = 1e-5  # L2 regularization parameter
 
 info = INFO[data_flag]
 task = info['task']
@@ -32,21 +33,6 @@ DataClass = getattr(medmnist, info['python_class'])
 
 # preprocessing
 data_transform = transforms.Compose([
-    transforms.ToTensor(),
-    transforms.Normalize(mean=[.5], std=[.5])
-])
-
-image_size = (28, 28)
-
-train_transform = transforms.Compose([
-    RandomResizedCrop(size=image_size, scale=(0.8, 1.0)),
-    RandomHorizontalFlip(),
-    RandomRotation(degrees=(-15, 15)),
-    transforms.ToTensor(),
-    transforms.Normalize(mean=[.5], std=[.5])
-])
-
-test_transform = transforms.Compose([
     transforms.ToTensor(),
     transforms.Normalize(mean=[.5], std=[.5])
 ])
@@ -65,8 +51,7 @@ test_loader = data.DataLoader(dataset=test_dataset, batch_size=2*BATCH_SIZE, shu
 train_dataset.montage(length=1)
 train_dataset.montage(length=20)
 
-import torch
-import torch.nn as nn
+# define a simple CNN model
 
 class Net(nn.Module):
     def __init__(self, in_channels, num_classes):
@@ -78,59 +63,31 @@ class Net(nn.Module):
             nn.ReLU())
 
         self.layer2 = nn.Sequential(
-            nn.Conv2d(16, 32, kernel_size=3),
-            nn.BatchNorm2d(32),
-            nn.ReLU())
+            nn.Conv2d(16, 16, kernel_size=3),
+            nn.BatchNorm2d(16),
+            nn.ReLU(),
+            nn.MaxPool2d(kernel_size=2, stride=2))
 
         self.layer3 = nn.Sequential(
-            nn.Conv2d(32, 64, kernel_size=3),
+            nn.Conv2d(16, 64, kernel_size=3),
             nn.BatchNorm2d(64),
             nn.ReLU())
 
         self.layer4 = nn.Sequential(
-            nn.Conv2d(64, 128, kernel_size=3),
-            nn.BatchNorm2d(128),
+            nn.Conv2d(64, 64, kernel_size=3),
+            nn.BatchNorm2d(64),
             nn.ReLU())
 
         self.layer5 = nn.Sequential(
-            nn.Conv2d(128, 256, kernel_size=3),
-            nn.BatchNorm2d(256),
-            nn.ReLU())
-
-        self.layer6 = nn.Sequential(
-            nn.Conv2d(256, 256, kernel_size=3, padding=1),
-            nn.BatchNorm2d(256),
-            nn.ReLU(),
-            nn.MaxPool2d(kernel_size=2, stride=2))
-
-        self.layer7 = nn.Sequential(
-            nn.Conv2d(256, 256, kernel_size=3, padding=1),
-            nn.BatchNorm2d(256),
-            nn.ReLU(),
-            nn.MaxPool2d(kernel_size=2, stride=2))
-
-        self.layer8 = nn.Sequential(
-            nn.Conv2d(256, 256, kernel_size=3, padding=1),
-            nn.BatchNorm2d(256),
-            nn.ReLU(),
-            nn.MaxPool2d(kernel_size=2, stride=2))
-
-        self.layer9 = nn.Sequential(
-            nn.Conv2d(256, 256, kernel_size=3, padding=1),
-            nn.BatchNorm2d(256),
-            nn.ReLU(),
-            nn.MaxPool2d(kernel_size=2, stride=2))
-
-        self.layer10 = nn.Sequential(
-            nn.Conv2d(256, 256, kernel_size=3, padding=1),
-            nn.BatchNorm2d(256),
+            nn.Conv2d(64, 64, kernel_size=3, padding=1),
+            nn.BatchNorm2d(64),
             nn.ReLU(),
             nn.MaxPool2d(kernel_size=2, stride=2))
 
         self.fc = nn.Sequential(
-            nn.Linear(256 * 4 * 4, 128),
+            nn.Linear(1024, 128),  # Adjusted input size to 1024
             nn.ReLU(),
-            nn.Linear(256, 256),
+            nn.Linear(128, 128),
             nn.ReLU(),
             nn.Linear(128, num_classes))
 
@@ -140,23 +97,11 @@ class Net(nn.Module):
         x = self.layer3(x)
         x = self.layer4(x)
         x = self.layer5(x)
-        x = self.layer6(x)
-        x = self.layer7(x)
-        x = self.layer8(x)
-        x = self.layer9(x)
-        x = self.layer10(x)
-
         x = x.view(x.size(0), -1)
         x = self.fc(x)
         return x
 
 
-# Create an instance of the extended model
-model = Net(in_channels=n_channels, num_classes=num_classes)
-
-
-
-# Create an instance of the extended model
 model = Net(in_channels=n_channels, num_classes=num_classes)
     
 # define loss function and optimizer
@@ -165,18 +110,22 @@ if task == "multi-label, binary-class":
 else:
     criterion = nn.CrossEntropyLoss()
     
-optimizer = optim.SGD(model.parameters(), lr=lr, momentum=0.9, weight_decay=weight_decay)  # Add weight decay
+optimizer = optim.SGD(model.parameters(), lr=lr, momentum=0.9)
 
-scheduler = optim.lr_scheduler.StepLR(optimizer, step_size=1, gamma=0.1)  # Adjust step_size and gamma as needed
+#declare arrays to hold loss and accuracy values
+train_loss,train_acc = [],[]
 
 
 # train
-
 for epoch in range(NUM_EPOCHS):
     train_correct = 0
     train_total = 0
     test_correct = 0
     test_total = 0
+    
+    running_loss = 0.0
+    running_correct,counter = 0,0
+
     
     model.train()
     for inputs, targets in tqdm(train_loader):
@@ -191,10 +140,24 @@ for epoch in range(NUM_EPOCHS):
             targets = targets.squeeze().long()
             loss = criterion(outputs, targets)
         
+        #running loss for current epoch
+        running_loss += loss.item()
+        
+        #running correct for current epoch
+        _,preds = torch.max(outputs.data,1)
+        running_correct += (preds==targets).sum().item()
+      
+        
         loss.backward()
         optimizer.step()
-    scheduler.step()
-
+        counter +=1
+       
+    #calculate epoch loss and accuracy and save to arrays
+    epoch_loss = running_loss / counter
+    epoch_acc = 100.*(running_correct/len(train_loader.dataset))
+    train_loss.append(epoch_loss)
+    train_acc.append(epoch_acc)
+                     
 # evaluation
 
 def test(split):
@@ -232,7 +195,23 @@ print('==> Evaluating ...')
 test('train')
 test('test')
 
+torch.save(model, r"C:\Users\mgbou\OneDrive\Documents\GitHub\GPT-Pneumonia-Detection\pneumonia_model.pth")
 
-torch.save(model, r'C:\Users\mgbou\OneDrive\Documents\GitHub\GPT-Pneumonia-Detection\pneumonia_model.pth')
+# Create graph and display graph of training loss and accuracy
+plt.figure(figsize=(10, 5))
+plt.subplot(1, 2, 1)
+plt.plot(range(1, NUM_EPOCHS + 1), train_loss, label='Training Loss')
+plt.xlabel('Epoch')
+plt.ylabel('Loss')
+plt.legend()
+
+plt.subplot(1, 2, 2)
+plt.plot(range(1, NUM_EPOCHS + 1), train_acc, label='Training Accuracy')
+plt.xlabel('Epoch')
+plt.ylabel('Accuracy')
+plt.legend()
+
+plt.tight_layout()
+plt.show()
 
 
