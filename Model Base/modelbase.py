@@ -10,6 +10,7 @@ import matplotlib.pyplot as plt
 from tqdm import tqdm
 
 dataset_name = 'pneumoniamnist'
+# data_flag = 'breastmnist'
 download_data = True
 learning_rate = 0.001
 num_epochs = 3
@@ -134,7 +135,7 @@ print('==> Evaluating ...')
 evaluate('train')
 evaluate('test')
 
-torch.save(network, r"Path To Directory (.pth file)")
+torch.save(network, r"Path to Directory (.pth file)")
 
 plt.figure(figsize=(10, 5))
 plt.subplot(1, 2, 1)

@@ -10,6 +10,7 @@ import matplotlib.pyplot as plt
 from tqdm import tqdm
 
 dataset_name = 'pneumoniamnist'
+# data_flag = 'breastmnist'
 download_data = True
 learning_rate = 0.001
 num_epochs = 3
