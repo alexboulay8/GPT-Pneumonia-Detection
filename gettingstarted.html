@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>GPT Script Recreation Guide</title>
+  </head>
+  <body style="background-color:rgb(175, 232, 211);">
+    <h1>Getting Started</h1>
+    <p></p><a href="assets/Pneumonia Detection with Neural Network.pdf">PDF Download</a></p>
+    - Full ChatGPT Thread Download 
+    <h2>Prerequisites:</h2>
+    To be able to run this python script on your own computer, you need to have a working install of Python 3.11, <a href = "https://www.python.org/downloads/">Link</a>. To check if the install was complete open the terminal on your computer and run this command,
+    <br>
+    <br>
+    "python --version" Output: "Python 3.11.3"
+    <br>
+
+    <h4>Pip Install:</h4>
+    For our purposes we used pip to install the required libraries. 
+    <br></br>
+    To install pip onto your computer to be able to install necessary Python libraries, open your terminal and run these commands,
+    <br>
+    <br>
+    "curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py"
+    <br>
+    <br>
+    "python get-pip.py"
+    <br>
+    <br>
+    To verify that Pip was installed run the command "pip --version" you should get this output: 
+    <br><br>
+    "pip 23.1.2 from (local directory)
+    <br><br>
+    If pip did not install correctly visit the Pip documentation page for a manual download, <a href = "https://pip.pypa.io/en/stable/installation/">Link</a>.
+
+    <br>
+    <h4>PyTorch Install:</h4>
+    To install PyTorch onto your computer to use in Python Scripts run the following command,
+    <br><br>
+    "pip install torch"
+    <br><br>
+    If PyTorch is not correctly installed visit the documentation page to correctly install the PyTorch libraries, <a href = "https://pytorch.org/get-started/locally/">Link</a>.
+   <br><br>
+   <h4>MatPlotLib Install:</h4>
+   To install the MatPlotLib Library to create visual representations of the data run the following command,
+   <br><br>
+   "pip install MatPlotLib"
+   <br><br>
+    <h4>MedMNIST Install:</h4>
+    To install the MedMNIST library from which this data gets its datasets run the following command 
+    <br></br>
+     "pip install medmnist"
+    <h3>ModelBase Explanation:</h3>
+    1: Importing Necessary Libraries and Modules 
+    <br><br>
+    <img src = "assets/1. Importing - Code.png" width = "200">
+    <br><br>
+    This code imports all the necessary libraries that are used in our program. Refer to the prerequisites to find what is needed to download prior to importing. 
+    <br><br>
+    2. Proprocess and Dataset Loading
+    <br><br>
+    <img src = "assets/2. Data Loading.png" width = "400">
+    <br><br>
+    This code sets the data type to specify which dataset we want to use. It also outlines the number of epochs as well as the batch size for each pass. Below outlines the importing of the dataset from medmnist and preprocessing the data into a standardized format. The dataset is also split in training and testing sets. 
+    <br><br>
+    3. Defining the Network Architecture:
+    <br><br>
+    <img src ="assets/3.png" width = "400">
+    <br>
+    <img src = "assets/4.png" width = "400">
+    <br><br>
+    This code is what defines our Convolutional Neural Network and its architecture. It includes both blocks of convolutional layers as well as the last fully connected layer. It also defines the forward pass function that will be used during training. 
+    <br><br>
+    4. Training loop:
+    <br><br>
+    <img src = "assets/5.png" width = "450">
+    <br><br>
+    This code defines the training loop that is used to create the model. It completes a forward pass and then computes the loss, after completing a backward pass it completes the loss again. It uses this to update the training weights and runs through training again until a threshold for the loss is reached. 
+    <br><br>
+    5. Evaluate:
+    <br><br>
+    <img src = "assets/6.png" width = "400">
+    <br><br>
+    This code defines the evaluation function which takes in the data and the loss from the training and uses those values to compute the accuracy and the final loss of the model.
+    <br><br>
+    6. Visual Representation: 
+    <br><br>
+    <img src = "assets/7.png" width = "400">
+    <br><br>
+    This code uses MatPlotLib to graph the loss and accuracy outputs from training and use that to create a graph of both the loss and accuracy over each epoch. 
+
+
+
+    
+</body>
+
+</html>
